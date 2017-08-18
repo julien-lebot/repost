@@ -1,0 +1,19 @@
+syntax = "proto3";
+package repost;
+option optimize_for = LITE_RUNTIME;
+
+// [START csharp_declaration]
+option csharp_namespace = "Repost";
+// [END csharp_declaration]
+
+message Message
+{
+	enum Command
+	{
+		Publish = 0;
+		Subscribe = 1;
+		Unsubscribe = 2;
+	}
+	Command command = 1;
+	bytes payload = 2;
+}
