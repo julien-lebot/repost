@@ -8,12 +8,26 @@ option csharp_namespace = "Repost";
 
 message Message
 {
-	enum Command
+	oneof Command
 	{
-		Publish = 0;
-		Subscribe = 1;
-		Unsubscribe = 2;
+		Subscribe subscribe = 1;
+		Unsubscribe unsubscribe = 2;
+		Publish publish = 3;
 	}
-	Command command = 1;
+}
+
+message Subscribe
+{
+	repeated string Channels = 1;
+}
+
+message Unsubscribe
+{
+	repeated string Channels = 1;
+}
+
+message Publish
+{
+	string channel = 1;
 	bytes payload = 2;
 }

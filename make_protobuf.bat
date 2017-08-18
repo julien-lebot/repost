@@ -17,5 +17,6 @@ if not exist build (
 )
 cd build
 cmake -G "Visual Studio 15 2017" -DCMAKE_INSTALL_PREFIX=../../../install ..
-msbuild protoc.vcxproj /p:Configuration=Debug
+msbuild libprotobuf-lite.vcxproj /p:Configuration=Debug
+msbuild libprotobuf-lite.vcxproj /p:Configuration=Release
 msbuild protoc.vcxproj /p:Configuration=Release

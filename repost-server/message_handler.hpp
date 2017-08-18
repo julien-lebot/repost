@@ -2,7 +2,6 @@
 #define __MESSAGE_HANDLER_HPP__
 
 #include <memory>
-#include <boost/tokenizer.hpp>
 
 class frame;
 class channel_manager;
@@ -12,8 +11,6 @@ typedef std::shared_ptr<client> client_ptr;
 class message_handler
 {
 private:
-    typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
-    boost::char_separator<char> _sep{ " " };
     channel_manager &_channelManager;
 public:
     message_handler(channel_manager& channelManager);

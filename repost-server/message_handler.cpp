@@ -1,15 +1,13 @@
 #include "stdafx.h"
 
 #include <memory>
-#include <boost/tokenizer.hpp>
 #include <boost/asio.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <google/protobuf/message_lite.h>
+
+#include <frame.hpp>
+#include <generated/cpp/repost-common/repost.pb.h>
 
 #include "message_handler.hpp"
 #include "channel_manager.hpp"
-#include <frame.hpp>
-#include <generated/cpp/repost-common/repost.pb.h>
 
 message_handler::message_handler(channel_manager& channelManager)
     : _channelManager(channelManager)
@@ -21,42 +19,25 @@ void message_handler::handle(const frame& frame, client_ptr client)
     BOOST_LOG_TRIVIAL(trace) << "Handling frame of " << frame.body_length() << " bytes from " << client;
 
     repost::Message msg;
-    //google::protobuf::MessageLite
+    msg.ParseFromArray(frame.body(), frame.body_length());
 
-    std::string body(frame.body(), frame.body_length());
-    tokenizer tok{ body, _sep};
-    std::vector<std::string> tokens;
-    for (const auto &token : tok)
+    if (msg.has_publish())
     {
-        tokens.push_back(token);
+        _channelManager.publish(msg.publish().channel(), client, msg.publish().payload());
     }
-
-    if (tokens.size() >= 2)
+    else if (msg.has_subscribe())
     {
-        if (tokens.size() == 3 && boost::starts_with(tokens[0], "PUBLISH"))
+        for (const auto &channel : msg.subscribe().channels())
         {
-            const auto &channel = tokens[1];
-            const auto &payload = tokens[2];
-            _channelManager.publish(channel, client, payload);
-        }
-        else if (boost::starts_with(tokens[0], "SUBSCRIBE"))
-        {
-            for (auto tokenIterator = tokens.begin() + 1; tokenIterator != tokens.end(); ++tokenIterator)
-            {
-                _channelManager.join(*tokenIterator, client);
-            }
-        }
-        else if (boost::starts_with(tokens[0], "UNSUBSCRIBE"))
-        {
-            for (auto tokenIterator = tokens.begin() + 1; tokenIterator != tokens.end(); ++tokenIterator)
-            {
-                _channelManager.leave(*tokenIterator, client);
-            }
+            _channelManager.join(channel, client);
         }
     }
-    else
+    else if (msg.has_unsubscribe())
     {
-        BOOST_LOG_TRIVIAL(warning) << "Not enough tokens (" << tokens.size() << ") in frame";
+        for (const auto &channel : msg.unsubscribe().channels())
+        {
+            _channelManager.leave(channel, client);
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <generated/cpp/repost-common/repost.pb.h>
 
 #include "client.hpp"
 
@@ -13,6 +14,34 @@ client::client(
     , _socket(io_service)
 {
     do_connect(endpoint_iterator);
+}
+
+void client::subscribe(std::vector<std::string> const& channels)
+{
+    repost::Message msg;
+    for (const auto &channel : channels)
+    {
+        msg.mutable_subscribe()->add_channels(channel);
+    }
+    write(std::move(frame(msg.SerializeAsString())));
+}
+
+void client::unsubscribe(std::vector<std::string> const& channels)
+{
+    repost::Message msg;
+    for (const auto &channel : channels)
+    {
+        msg.mutable_unsubscribe()->add_channels(channel);
+    }
+    write(std::move(frame(msg.SerializeAsString())));
+}
+
+void client::publish(std::string const& channel, std::string const& payload)
+{
+    repost::Message msg;
+    msg.mutable_publish()->set_channel(channel);
+    msg.mutable_publish()->set_payload(payload);
+    write(std::move(frame(msg.SerializeAsString())));
 }
 
 void client::write(const frame& msg)

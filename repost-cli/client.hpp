@@ -15,11 +15,16 @@ public:
     client(boost::asio::io_service& io_service,
            boost::asio::ip::tcp::resolver::iterator endpoint_iterator);
 
-    void write(const frame& msg);
+    void subscribe(std::vector<std::string> const &channels);
+    void unsubscribe(std::vector<std::string> const &channels);
+    void publish(std::string const &channel, std::string const &payload);
 
     void close();
 
 private:
+
+    void write(const frame& msg);
+
     void do_connect(boost::asio::ip::tcp::resolver::iterator endpoint_iterator);
 
     void do_read_header();

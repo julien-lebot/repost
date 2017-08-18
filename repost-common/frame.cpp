@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstring>
 #include "Frame.hpp"
-#include <exception>
 
 frame::frame() : _bodyLength(0)
 {

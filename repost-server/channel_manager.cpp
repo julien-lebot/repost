@@ -38,6 +38,11 @@ void channel_manager::leave(client_ptr client)
 void channel_manager::leave(std::string const& channelName, client_ptr client)
 {
     BOOST_LOG_TRIVIAL(info) << "Client " << client << " is leaving " << channelName;
+    if (_channels.find(channelName) == _channels.end())
+    {
+        BOOST_LOG_TRIVIAL(warning) << "Channel " << channelName << " doesn't exists";
+        return;
+    }
     auto theChannel = _channels[channelName];
     theChannel->leave(client);
     if (theChannel->is_empty())
