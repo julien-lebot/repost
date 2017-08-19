@@ -7,12 +7,51 @@ Simple &amp; straightforward pubsub based on boost::asio & google's protobuf.
 
 # Compilation on Windows:
 
-* Clone the repository
-* Build protobuf with 
-`make_protobuf.bat`
-* Generate the protocol code with
-`generate_code.bat`
-* Open the Visual Studio solution & compile
+Clone the repository
+
+    λ git clone --recursive ...
+    
+Build protobuf with 
+
+    λ make_protobuf.bat
+    
+Generate the protocol code with
+
+    λ generate_code.bat`
+    
+Open the Visual Studio solution & compile
+
+# Compilation on Linux:
+
+(Only tested with Ubuntu 17.04)
+Install the prerequisites
+    - boost 1.62+
+    - cmake
+    
+Clone the repository
+ 
+    λ git clone --recursive ...
+ 
+Retrieve the correct version of protobuf (3.4.0)
+ 
+    λ cd protobuf
+    λ git checkout tags/v3.4.0
+
+Follow the compilation instruction for protobuf
+
+    λ ./configure
+    λ make
+    λ make check
+    λ sudo make install
+    λ sudo ldconfig
+    
+Build the project
+
+    λ cd ..
+    λ mkdir build
+    λ cd build
+    λ cmake ..
+    λ make
 
 # Usage
 
