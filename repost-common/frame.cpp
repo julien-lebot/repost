@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include <cstdio>
 #include <cstring>
-#include "Frame.hpp"
+
+#include "frame.hpp"
 
 frame::frame() : _bodyLength(0)
 {
@@ -57,7 +57,7 @@ void frame::body_length(std::size_t new_length)
     _bodyLength = new_length;
     if (_bodyLength > max_body_length)
     {
-        throw std::exception("new_length too big");
+        _bodyLength = max_body_length;
     }
 }
 
