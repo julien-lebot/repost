@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "client.hpp"
-#include "Frame.hpp"
+#include "frame.hpp"
 
 client::client(tcp::socket socket, message_handler& messageHandler)
 : _socket(std::move(socket))                                   
