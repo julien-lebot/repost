@@ -16,6 +16,7 @@ namespace po = boost::program_options;
 static const char* HelpFlag = "help";
 static const char* HostFlag = "host";
 static const char* PortFlag = "port";
+static const char* TimeoutFlag = "timeout";
 static const char* BenchmarkFlag = "benchmark";
 static const char* ChannelsFlag = "channel";
 
@@ -69,6 +70,7 @@ int main(int argc, char* argv[])
             (HelpFlag, "produce help message")
             (HostFlag, po::value<std::string>(), "set the host to connect to")
             (PortFlag, po::value<uint16_t>(), "set the port to connect to")
+            (TimeoutFlag, po::value<int64_t>()->implicit_value(500), "set the timeout in milliseconds (default 500ms)")
             (BenchmarkFlag, po::value<uint32_t>(), "set the number of test messages to send to a test channel")
             (ChannelsFlag, po::value<std::vector<std::string>>(), "if used with --benchmark, sets the test channels to send the benchmark messages to. Else listens to the given channels.")
             ;
@@ -106,20 +108,23 @@ int main(int argc, char* argv[])
         repost::client client(io_service);
         auto futureResult = client.connect(endpoint_iterator);
 
-        auto status = futureResult.wait_for(boost::chrono::milliseconds(500));
-        if (status == boost::future_status::timeout)
-        {
-            std::cerr << "Timeout" << std::endl;
-            client.close();
-            return 1;
-        }
-
         boost::thread t([&io_service]() { io_service.run(); });
 
-        auto errorCode = futureResult.get();
-        if (errorCode)
+        if (vm.count(TimeoutFlag) && vm[TimeoutFlag].as<int64_t>() > 0)
         {
-            std::cerr << errorCode.message() << std::endl;
+            auto status = futureResult.wait_for(boost::chrono::milliseconds(vm[TimeoutFlag].as<int64_t>()));
+            if (status == boost::future_status::timeout)
+            {
+                std::cerr << "Timeout" << std::endl;
+                client.close();
+                return 1;
+            }
+        }
+
+        boost::system::error_code connectionErrorCode = futureResult.get();
+        if (connectionErrorCode)
+        {
+            std::cerr << connectionErrorCode.message() << std::endl;
             return 1;
         }
 
