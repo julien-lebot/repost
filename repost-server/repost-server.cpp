@@ -1,78 +1,49 @@
-// repost-server.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 
 #include <iostream>
-#include <memory>
 #include <boost/asio.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
-#include <generated/cpp/repost-common/repost.pb.cc>
+#include <boost/program_options.hpp>
 
-#include "channel_manager.hpp"
-#include "message_handler.hpp"
-#include "client.hpp"
+#include "server.hpp"
 
 using boost::asio::ip::tcp;
+namespace po = boost::program_options;
 
-class server
-{
-public:
-    server(
-        boost::asio::io_service& io_service,
-        const tcp::endpoint& endpoint)
-    : _acceptor(io_service, endpoint)
-    , _socket(io_service)
-    , _channelManager()
-    , _messageHandler(_channelManager)
-    {
-        do_accept();
-    }
-
-private:
-    void do_accept()
-    {
-        _acceptor.async_accept(_socket,
-            [this](boost::system::error_code ec)
-        {
-            if (!ec)
-            {
-                BOOST_LOG_TRIVIAL(info) << "New client connected from " << _socket.remote_endpoint().address() << ":" << _socket.remote_endpoint().port();
-                std::make_shared<client>(std::move(_socket), _messageHandler)->start();
-            }
-            else
-            {
-                BOOST_LOG_TRIVIAL(error) << "Error accepting client: " << ec.message();
-            }
-            do_accept();
-        });
-    }
-
-    tcp::acceptor _acceptor;
-    tcp::socket _socket;
-    channel_manager _channelManager;
-    message_handler _messageHandler;
-};
+static const char* HelpFlag = "help";
+static const char* HostFlag = "host";
+static const char* PortFlag = "port";
 
 int main(int argc, char* argv[])
 {
     try
     {
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            (HelpFlag, "produce help message")
+            (PortFlag, po::value<uint16_t>(), "set the port to connect to")
+        ;
+
+        po::variables_map vm;
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+
+        if (vm.count(HelpFlag) ||
+            !vm.count(PortFlag))
+        {
+            std::cout << desc << std::endl;
+            return 0;
+        }
+
         boost::log::core::get()->set_filter
         (
             boost::log::trivial::severity >= boost::log::trivial::info
         );
 
-        if (argc < 2)
-        {
-            std::cerr << "Usage: repost-server <port>\n";
-            return 1;
-        }
-
         boost::asio::io_service io_service;
 
-        server server(io_service, tcp::endpoint(tcp::v4(), std::atoi(argv[1])));
+        repost::server server(io_service, tcp::endpoint(tcp::v4(), vm[PortFlag].as<uint16_t>()));
         io_service.run();
     }
     catch (std::exception& e)
@@ -82,4 +53,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

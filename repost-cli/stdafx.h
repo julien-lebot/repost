@@ -2,7 +2,7 @@
 #define __REPOST_CLI_STDAFX_H__
 
 #ifdef _WIN32
-#include "targetver.h"
+#include <SDKDDKVer.h>
 
 #include <stdio.h>
 #include <tchar.h>

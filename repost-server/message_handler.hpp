@@ -3,21 +3,24 @@
 
 #include <memory>
 
-class frame;
-class channel_manager;
-class client;
-typedef std::shared_ptr<client> client_ptr;
-
-class message_handler
+namespace repost
 {
-private:
-    channel_manager &_channelManager;
-public:
-    message_handler(channel_manager& channelManager);
+    class frame;
+    class channel_manager;
+    class remote_client;
+    typedef std::shared_ptr<remote_client> client_ptr;
 
-    void handle(const frame& frame, client_ptr client);
+    class message_handler
+    {
+    private:
+        channel_manager &_channelManager;
+    public:
+        message_handler(channel_manager& channelManager);
 
-    void disconnect(client_ptr client);
-};
+        void handle(const frame& frame, client_ptr client);
+
+        void disconnect(client_ptr client);
+    };
+}
 
 #endif // __MESSAGE_HANDLER_HPP__

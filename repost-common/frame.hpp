@@ -3,37 +3,39 @@
 
 #include <string>
 
-class frame
+namespace repost
 {
-public:
-    enum { header_length = 4 };
-    enum { max_body_length = 8192 };
+    class frame
+    {
+    public:
+        enum { header_length = 4 };
+        enum { max_body_length = 8192 };
 
-    frame();
-    explicit frame(const char *data);
-    explicit frame(const std::string &data);
+        frame();
+        explicit frame(const char *data);
+        explicit frame(const std::string &data);
 
-    const char* data() const;
+        const char* data() const;
 
-    char* data();
+        char* data();
 
-    std::size_t length() const;
+        std::size_t length() const;
 
-    const char* body() const;
+        const char* body() const;
 
-    char* body();
+        char* body();
 
-    std::size_t body_length() const;
+        std::size_t body_length() const;
 
-    void body_length(std::size_t new_length);
+        void body_length(std::size_t new_length);
 
-    bool decode_header();
+        bool decode_header();
 
-    void encode_header();
+        void encode_header();
 
-private:
-    char data_[header_length + max_body_length];
-    std::size_t _bodyLength;
-};
-
+    private:
+        char data_[header_length + max_body_length];
+        std::size_t _bodyLength;
+    };
+}
 #endif
