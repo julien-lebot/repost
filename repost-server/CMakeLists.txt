@@ -14,7 +14,7 @@ target_link_libraries(repost-server repost-common)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
-find_package(Boost 1.62.0 REQUIRED COMPONENTS system log program_options)
+find_package(Boost 1.54.0 REQUIRED COMPONENTS system log program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(repost-server ${Boost_LIBRARIES})
 
