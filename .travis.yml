@@ -38,6 +38,11 @@ install:
       
   # Go to the Root directory  
   - cd ..
+  
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        ./generate_code.sh
+      fi
 
 # Build steps
 script:
