@@ -24,7 +24,7 @@ cache:
 before_install:
   # Build protobuf 3.4.0 from sources if not found in cache
   - |
-      if [[ ! -d "$HOME/protobuf/lib" ]]; then
+      if [[ ! -d "$HOME/protobuf" ]]; then
         PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
         mkdir protobuf && travis_retry wget --no-check-certificate --quiet -O - ${PROTOBUF_URL} | tar --strip-components=1 -xz -C protobuf
         cd protobuf && ./configure --prefix=$HOME/protobuf && make && make install
