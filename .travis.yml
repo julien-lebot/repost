@@ -30,8 +30,9 @@ install:
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
         mkdir protobuf && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C protobuf
-        cd protobuf-3.4.0
+        cd protobuf
         ./configure --prefix=/home/travis && make -j2 && make install
+        cd ..
       fi
       
   # Go to the Root directory  
