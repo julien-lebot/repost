@@ -44,7 +44,8 @@ before_script:
 # Run the build script.
 script:
   - mkdir -p repost-common/generated/cpp
-  - $HOME/protobuf/bin/protoc --cpp_out="repost-common/generated/cpp" repost-common/repost.proto
+  - protoc --cpp_out="repost-common/generated/cpp" repost-common/repost.proto
   - mkdir -p build
   - cd build
-  - cmake .. && make
+  - cmake -D CMAKE_PREFIX_PATH:PATH=${DEPS_DIR}/protobuf/install ..
+  - cmake --build .
