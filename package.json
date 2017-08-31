@@ -1,0 +1,10 @@
+{
+  "name": "repost",
+  "version": "1.0.0",
+  "author": "Julien Lebot",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "gulp": "^3.9.1",
+    "minimist": "^1.2.0"
+  }
+}

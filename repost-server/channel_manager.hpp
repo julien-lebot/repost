@@ -2,27 +2,29 @@
 #define __CHANNEL_MANAGER_HPP__
 
 #include <memory>
-#include <boost/asio.hpp>
 #include <unordered_map>
+#include <set>
 
-class client;
-typedef std::shared_ptr<client> client_ptr;
-
-class channel;
-typedef std::shared_ptr<channel> channel_ptr;
-
-class channel_manager
+namespace repost
 {
-private:
-    std::unordered_map<std::string, channel_ptr> _channels;
-public:
-    void join(std::string const& channel, client_ptr client);
+    class Publication;
+    class remote_client;
+    typedef std::shared_ptr<remote_client> client_ptr;
 
-    void leave(client_ptr client);
+    class channel_manager
+    {
+    private:
+        typedef std::shared_ptr<std::set<client_ptr>> channel_ptr;
+        std::unordered_map<std::string, channel_ptr> _channels;
+    public:
+        void join(std::string const& channel, client_ptr client);
 
-    void leave(std::string const& channel, client_ptr client);
+        void leave(client_ptr client);
 
-    void publish(std::string const& channel, client_ptr from, std::string const& message);
-};
+        void leave(std::string const& channel, client_ptr client);
+
+        void publish(client_ptr from, const Publication& message);
+    };
+}
 
 #endif // __CHANNEL_MANAGER_HPP__
