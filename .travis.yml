@@ -31,6 +31,10 @@ before_install:
         cd ..
       fi
 
+# check what has been installed by listing contents of protobuf folder
+before_script:
+  - ls -R $HOME/protobuf
+  
 script:
   - mkdir -p repost-common/generated/cpp
   - $HOME/protobuf/bin/protoc --cpp_out="repost-common/generated/cpp" repost-common/repost.proto
