@@ -1,4 +1,4 @@
-sudo: required
+sudo: false
 
 # Enable C++ support
 language: cpp
@@ -14,25 +14,27 @@ addons:
     sources:
       - boost-latest
     packages:
+      - cmake
       - libboost-dev
-      
+            
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
-  
+
+  # Build CMake 3.9 if not found in cache
+  #- |
+  #  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+  #    CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.tar.gz"
+  #    mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+  #    export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+  #  fi
+
+  # Build protobuf 3.4.0 from sources if not found in cache
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.tar.gz"
-      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-    fi
-    
-  - |
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]] && [[ ! -d "$HOME/protobuf/lib" ]]; then
         PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
         mkdir protobuf && travis_retry wget --no-check-certificate --quiet -O - ${PROTOBUF_URL} | tar --strip-components=1 -xz -C protobuf
-        cd protobuf
-        ./configure --prefix=/home/travis && make -j2 && make install
+        cd protobuf && ./configure --prefix=$HOME/protobuf && make && make install
         cd ..
       fi
       
@@ -41,12 +43,17 @@ install:
   
   - |
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        mkdir -p repost-common/generated/cpp
+        mkdir -p repost-common/generated/cs
+        repost-common/generated/js
         ./generate_code.sh
       fi
 
+cache:
+  directories:
+  - $HOME/protobuf
+  #- ${DEPS_DIR}/cmake
+
 # Build steps
 script:
-  - mkdir build
-  - cd build
-  - ${DEPS_DIR}/cmake/bin/cmake ..
-  - make
+  - mkdir build && cd build && cmake .. && make
