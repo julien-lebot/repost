@@ -5,5 +5,6 @@ find_package(Protobuf 3.4.0 REQUIRED)
 include_directories(${Protobuf_INCLUDE_DIRS})
 
 add_library(repost-common STATIC
+            client.cpp
             frame.cpp
             generated/cpp/repost-common/repost.pb.cc)
