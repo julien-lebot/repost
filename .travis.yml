@@ -11,7 +11,7 @@ addons:
       - boost-latest
     packages:
       - cmake
-      - libboost-dev
+      - libboost-all-dev
 
 # Cache dependencies to speed up the build.
 cache:
