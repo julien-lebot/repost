@@ -22,7 +22,7 @@ cache:
   - $HOME/protobuf
   
 before_install:
-  - bash install-protobuf.sh
+  - bash install_protobuf.sh
 
 # check what has been installed by listing contents of protobuf folder
 before_script:
