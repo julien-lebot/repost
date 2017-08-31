@@ -26,13 +26,16 @@ install:
       mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
+
+  # Go to the Root directory  
+  - cd ..
+    
   - |
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
-        mkdir protobuf && travis_retry wget --no-check-certificate --quiet -O - ${PROTOBUF_URL} | tar --strip-components=1 -xz -C protobuf
         cd protobuf
-        ./configure --prefix=/home/travis && make -j2 && make install
-        cd ..
+        ./configure
+        make
+        sudo make install
       fi
       
   # Go to the Root directory  
@@ -42,4 +45,5 @@ install:
 script:
   - mkdir build
   - cd build
-  - ${DEPS_DIR}/cmake/bin/cmake .. && make
+  - ${DEPS_DIR}/cmake/bin/cmake ..
+  - make
