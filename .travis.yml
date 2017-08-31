@@ -1,0 +1,44 @@
+sudo: required
+
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+
+addons:
+  apt:
+    sources:
+      - boost-latest
+    packages:
+      - libboost1.62-dev
+      
+install:
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+  
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    fi
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
+        mkdir protobuf && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C protobuf
+        cd protobuf
+        ./configure --prefix=/home/travis && make -j2 && make install
+      fi
+      
+  # Go to the Root directory  
+  - cd ..
+
+# Build steps
+script:
+  - mkdir build
+  - cd build
+  - ${DEPS_DIR}/cmake/bin/cmake .. && make
