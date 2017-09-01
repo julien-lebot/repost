@@ -17,7 +17,7 @@ target_link_libraries(repost-cli ${Boost_LIBRARIES})
 set(Protobuf_USE_STATIC_LIBS ON)
 find_package(Protobuf 3.4.0 REQUIRED)
 include_directories(${Protobuf_INCLUDE_DIRS})
-target_link_libraries(repost-cli libprotobuf-lite.a)
+target_link_libraries(repost-cli ${Protobuf_LITE_LIBRARIES})
 
 find_package(Threads REQUIRED)
 target_link_libraries(repost-cli ${CMAKE_THREAD_LIBS_INIT})
