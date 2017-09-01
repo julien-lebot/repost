@@ -48,10 +48,10 @@ install:
             mkdir -p boost
             travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C boost
             cd boost
-            ./bootstrap.sh --prefix=${DEPS_DIR}/boost/install
-                --with-libraries=system
-                --with-libraries=program_options
-                --with-libraries=thread
+            ./bootstrap.sh --prefix=${DEPS_DIR}/boost/install \
+                --with-libraries=system \
+                --with-libraries=program_options \
+                --with-libraries=thread \
                 --with-libraries=log
             ./b2 install
         fi
