@@ -31,6 +31,7 @@ install:
     - |
         PROTOBUF_URL="https://github.com/google/protobuf/releases/download/v3.4.0/protobuf-cpp-3.4.0.tar.gz"
         if [ ! -f ${DEPS_DIR}/protobuf/install/bin/protoc ] ; then
+            cd "${DEPS_DIR}"
             mkdir -p protobuf
             travis_retry wget --no-check-certificate --quiet -O - ${PROTOBUF_URL} | tar --strip-components=1 -xz -C protobuf
             cd protobuf
@@ -43,13 +44,14 @@ install:
     - |
         BOOST_URL="http://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz"
         if [ ! -f ${DEPS_DIR}/boost/install/lib/libboost_system.a ] ; then
+            cd "${DEPS_DIR}"
             mkdir -p boost
             travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C boost
             cd boost
-            ./boostrap.sh --prefix=${DEPS_DIR}/boost/install \
-                --with-libraries=system \
-                --with-libraries=program_options \
-                --with-libraries=thread \
+            ./bootstrap.sh --prefix=${DEPS_DIR}/boost/install
+                --with-libraries=system
+                --with-libraries=program_options
+                --with-libraries=thread
                 --with-libraries=log
             ./b2 install
         fi
@@ -67,7 +69,7 @@ script:
   - protoc --cpp_out="repost-common/generated/cpp" repost-common/repost.proto
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release \
-          -D CMAKE_PREFIX_PATH:PATH=${DEPS_DIR}/protobuf/install \
+  - cmake -DCMAKE_BUILD_TYPE=Release
+          -D CMAKE_PREFIX_PATH:PATH=${DEPS_DIR}/protobuf/install
           -D BOOST_ROOT:PATHNAME=${DEPS_DIR}/boost/install ..
   - cmake --build .
