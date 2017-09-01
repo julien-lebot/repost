@@ -1,4 +1,8 @@
 # repost
+
+[![Build Status](https://travis-ci.org/julien-lebot/repost.svg?branch=master)](https://travis-ci.org/julien-lebot/repost)
+
+
 Simple &amp; straightforward pubsub based on boost::asio & google's protobuf.
 
 # Prerequisites
