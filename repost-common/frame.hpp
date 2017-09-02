@@ -19,23 +19,23 @@ namespace repost
 
         char* data();
 
-        std::size_t length() const;
+        uint32_t length() const;
 
         const char* body() const;
 
         char* body();
 
-        std::size_t body_length() const;
+        uint32_t body_length() const;
 
-        void body_length(std::size_t new_length);
+        void body_length(uint32_t new_length);
 
         bool decode_header();
 
         void encode_header();
 
     private:
-        char data_[header_length + max_body_length];
-        std::size_t _bodyLength;
+        char _data[header_length + max_body_length];
+        uint32_t _bodyLength;
     };
 }
 #endif

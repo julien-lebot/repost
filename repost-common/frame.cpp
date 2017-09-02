@@ -1,8 +1,10 @@
 #include "stdafx.h"
 
 #include <cstring>
+#include <google/protobuf/wire_format_lite.h>
 
 #include "frame.hpp"
+
 
 namespace repost
 {
@@ -26,35 +28,35 @@ namespace repost
 
     const char* frame::data() const
     {
-        return data_;
+        return _data;
     }
 
     char* frame::data()
     {
-        return data_;
+        return _data;
     }
 
-    std::size_t frame::length() const
+    uint32_t frame::length() const
     {
         return header_length + _bodyLength;
     }
 
     const char* frame::body() const
     {
-        return data_ + header_length;
+        return _data + header_length;
     }
 
     char* frame::body()
     {
-        return data_ + header_length;
+        return _data + header_length;
     }
 
-    std::size_t frame::body_length() const
+    uint32_t frame::body_length() const
     {
         return _bodyLength;
     }
 
-    void frame::body_length(std::size_t new_length)
+    void frame::body_length(uint32_t new_length)
     {
         _bodyLength = new_length;
         if (_bodyLength > max_body_length)
@@ -65,9 +67,16 @@ namespace repost
 
     bool frame::decode_header()
     {
-        char header[header_length + 1] = "";
-        std::strncat(header, data_, header_length);
-        _bodyLength = std::atoi(header);
+        google::protobuf::internal::WireFormatLite::ReadPrimitiveFromArray
+            <
+                uint32_t,
+                google::protobuf::internal::WireFormatLite::TYPE_FIXED32
+            >
+            (
+                reinterpret_cast<uint8_t*>(_data),
+                &_bodyLength
+            );
+
         if (_bodyLength > max_body_length)
         {
             _bodyLength = 0;
@@ -78,8 +87,10 @@ namespace repost
 
     void frame::encode_header()
     {
-        char header[header_length + 1] = "";
-        std::sprintf(header, "%4d", static_cast<int>(_bodyLength));
-        std::memcpy(data_, header, header_length);
+        google::protobuf::internal::WireFormatLite::WriteFixed32NoTagToArray
+        (
+            _bodyLength,
+            reinterpret_cast<uint8_t*>(_data)
+        );
     }
 }

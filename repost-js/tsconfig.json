@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": true
+    },
+    "compileOnSave": false,
+    "files": [
+        "index.ts",
+        "repost-cli.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

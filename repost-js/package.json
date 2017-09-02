@@ -1,0 +1,25 @@
+{
+  "name": "repost-js",
+  "version": "1.0.0",
+  "description": "Repost client for nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node repost-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/julien-lebot/repost.git"
+  },
+  "author": "Julien Lebot",
+  "license": "MIT",
+  "dependencies": {
+    "q": "^1.5.0",
+    "yargs": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.26",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.2",
+    "typescript": "^2.5.2"
+  }
+}
