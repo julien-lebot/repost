@@ -67,15 +67,11 @@ namespace repost
 
     bool frame::decode_header()
     {
-        google::protobuf::internal::WireFormatLite::ReadPrimitiveFromArray
-            <
-                uint32_t,
-                google::protobuf::internal::WireFormatLite::TYPE_FIXED32
-            >
-            (
-                reinterpret_cast<uint8_t*>(_data),
-                &_bodyLength
-            );
+        google::protobuf::io::CodedInputStream::ReadLittleEndian32FromArray
+        (
+            reinterpret_cast<uint8_t*>(_data),
+            &_bodyLength
+        );
 
         if (_bodyLength > max_body_length)
         {
@@ -87,7 +83,7 @@ namespace repost
 
     void frame::encode_header()
     {
-        google::protobuf::internal::WireFormatLite::WriteFixed32NoTagToArray
+        google::protobuf::io::CodedOutputStream::WriteLittleEndian32ToArray
         (
             _bodyLength,
             reinterpret_cast<uint8_t*>(_data)

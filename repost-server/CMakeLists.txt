@@ -23,7 +23,5 @@ find_package(Protobuf 3.4.0 REQUIRED)
 include_directories(${Protobuf_INCLUDE_DIRS})
 target_link_libraries(repost-server ${Protobuf_LITE_LIBRARIES})
 
-add_definitions(-DPROTOBUF_INLINE_NOT_IN_HEADERS=0)
-
 find_package(Threads REQUIRED)
 target_link_libraries(repost-server ${CMAKE_THREAD_LIBS_INIT})
