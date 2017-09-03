@@ -25,8 +25,8 @@ var client = new RepostClient();
 client.on('data', function(msg) {
     console.log(msg.channel + ': ' + msg.payload);
 });
-
-client.connect(server[0], server[1]).then(function() {
+console.log('Connecting to ' + server[0] + ' on ' + server[1]);
+client.connect(server[0], parseInt(server[1])).then(function() {
     var rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
